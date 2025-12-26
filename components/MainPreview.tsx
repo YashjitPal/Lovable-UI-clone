@@ -1,18 +1,23 @@
+
 import React from 'react';
 import TopBar from './TopBar';
 import { Loader2, ChevronUp, ChevronDown } from 'lucide-react';
 
-const MainPreview: React.FC = () => {
+interface MainPreviewProps {
+  isSidebarCollapsed: boolean;
+  onToggleSidebar: () => void;
+}
+
+const MainPreview: React.FC<MainPreviewProps> = ({ isSidebarCollapsed, onToggleSidebar }) => {
   return (
     <div className="flex-1 flex flex-col h-full bg-main overflow-hidden">
       {/* TopBar sitting at the top, using the #1c1c1c main theme */}
       <div className="flex-shrink-0">
-        <TopBar />
+        <TopBar isSidebarCollapsed={isSidebarCollapsed} onToggleSidebar={onToggleSidebar} />
       </div>
 
-      {/* Preview Area - pl-0 makes the distance between Sidebar content and Canvas equal to Sidebar's left margin */}
-      <div className="flex-1 pl-0 pr-4 pb-4 pt-0">
-        {/* The focus "rounded one" container - uses #18181a canvas theme - Reduced radius further to 12px */}
+      {/* Preview Area */}
+      <div className={`flex-1 pr-4 pb-4 pt-0 transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'pl-4' : 'pl-0'}`}>
         <div className="w-full h-full bg-canvas border border-border rounded-[12px] relative flex items-center justify-center overflow-hidden">
           
           {/* Status Pill */}

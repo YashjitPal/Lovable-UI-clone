@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   Cloud, 
@@ -10,14 +11,31 @@ import {
   ExternalLink,
   Share2,
   Github,
-  Zap
+  Zap,
+  Clock,
+  PanelLeftOpen
 } from 'lucide-react';
 
-const TopBar: React.FC = () => {
+interface TopBarProps {
+  isSidebarCollapsed: boolean;
+  onToggleSidebar: () => void;
+}
+
+const TopBar: React.FC<TopBarProps> = ({ isSidebarCollapsed, onToggleSidebar }) => {
   return (
     <div className="h-14 flex items-center justify-between px-6 w-full flex-shrink-0 bg-main">
       {/* Left Group */}
       <div className="flex items-center gap-4">
+        {isSidebarCollapsed && (
+          <div className="flex items-center gap-1.5 text-gray-400 mr-2 transition-all duration-300 animate-in fade-in slide-in-from-left-4">
+            <button className="p-1.5 hover:text-white transition-colors">
+              <Clock size={16} />
+            </button>
+            <button onClick={onToggleSidebar} className="p-1.5 hover:text-white transition-colors">
+              <PanelLeftOpen size={16} />
+            </button>
+          </div>
+        )}
         <button className="bg-[#1e293b] text-[#60a5fa] px-3 py-1.5 rounded-md flex items-center gap-2 text-xs font-medium border border-[#3b82f6]/20 shadow-[0_0_10px_rgba(59,130,246,0.1)] transition-all hover:bg-[#1e293b]/80">
           <Monitor size={14} />
           Preview

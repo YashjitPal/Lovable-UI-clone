@@ -33,7 +33,7 @@ const TopBar: React.FC = () => {
 
       {/* Center Address Bar */}
       <div className="flex-1 max-w-xl px-8">
-        <div className="bg-input border border-border rounded-lg flex items-center h-9 px-3 gap-2 group focus-within:border-gray-500 transition-all duration-200">
+        <div className="bg-[#1c1c1c] border border-[#383838] rounded-lg flex items-center h-9 px-3 gap-2 group focus-within:border-gray-500 transition-all duration-200">
           <div className="text-gray-500 flex items-center">
             <Monitor size={14} className="text-gray-500" />
           </div>

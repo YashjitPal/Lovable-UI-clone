@@ -35,14 +35,23 @@ const AnnotateIcon = ({ size = 16, className = "" }: { size?: number, className?
   </svg>
 );
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  width: number;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ width }) => {
+  // Threshold for switching to icon-only mode decreased to 405.
+  // This ensures that they stay in text-mode longer as the sidebar shrinks,
+  // transitioning only when there is a "very minute distance" remaining.
+  const isCompact = width < 405;
+  
   return (
-    <div className="w-[400px] flex-shrink-0 flex flex-col bg-sidebar h-full overflow-hidden">
-      {/* Header */}
-      <div className="h-14 px-4 flex items-center justify-between">
+    <div style={{ width: `${width}px` }} className="flex-shrink-0 flex flex-col bg-sidebar h-full overflow-hidden relative">
+      {/* Header - Stays at px-[27px] */}
+      <div className="h-14 px-[27px] flex items-center justify-between z-20 bg-sidebar">
         <div className="flex items-center gap-2 cursor-pointer hover:bg-white/5 p-1.5 rounded-md transition-colors">
-          <span className="font-semibold text-gray-200">Melody Maker Studio</span>
-          <ChevronDown size={14} className="text-gray-500" />
+          <span className="font-semibold text-gray-200 truncate">Melody Maker Studio</span>
+          <ChevronDown size={14} className="text-gray-500 flex-shrink-0" />
         </div>
         <div className="flex items-center gap-3 text-gray-400">
           <div className="flex items-center gap-1">
@@ -52,28 +61,23 @@ const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-8">
-        {/* Date Divider */}
-        <div className="flex justify-center">
-          <span className="text-xs text-gray-500">Dec 26 at 6:24 PM</span>
-        </div>
-
-        {/* User Message - Updated to be fully rounded on all corners */}
+      {/* Scrollable Content - Stays at px-[27px] to keep chat messages position unchanged */}
+      <div className="flex-1 overflow-y-auto px-[27px] pt-5 pb-44 space-y-8 no-scrollbar">
+        {/* User Message - Shifted up to replace the date divider position. Border removed. */}
         <div className="flex justify-end">
-          <div className="bg-[#27272a] text-gray-200 px-4 py-3 rounded-2xl max-w-[90%] text-[15px] leading-relaxed shadow-sm border border-white/5">
+          <div className="bg-[#27272a] text-gray-200 px-4 py-3 rounded-2xl max-w-[78%] text-[15px] leading-relaxed shadow-sm">
             code the website where I can make music by adjusting some aspects and stuff
           </div>
         </div>
 
         {/* AI Thought Process */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 text-gray-400">
-            <Lightbulb size={16} className="text-yellow-500/80" />
-            <span className="text-xs font-medium">Thought for 12s</span>
+          <div className="flex items-center gap-2.5" style={{ color: '#81888f' }}>
+            <Lightbulb size={18} />
+            <span className="text-[15.15px] font-medium">Thought for 12s</span>
           </div>
 
-          <div className="text-gray-300 text-[15px] leading-relaxed space-y-4">
+          <div className="text-gray-300 text-[15px] leading-[1.65] space-y-5">
             <p>
               I'll build a sleek music creation app with a dark, neon-synth aesthetic inspired by DAWs and drum machines.
             </p>
@@ -94,10 +98,10 @@ const Sidebar: React.FC = () => {
             </div>
           </div>
 
-          {/* File Editing Status */}
-          <div className="flex items-center gap-2 text-gray-500">
-            <FileCode2 size={16} />
-            <span className="text-xs">Editing <span className="font-mono text-gray-400 bg-white/5 px-1 rounded">index.css</span></span>
+          {/* File Editing Status - Adjusted size to 1.01x normal text (15.15px) and icons to 18px */}
+          <div className="flex items-center gap-2.5" style={{ color: '#81888f' }}>
+            <FileCode2 size={18} />
+            <span className="text-[15.15px]">Editing <span className="font-mono bg-white/5 px-1.5 py-0.5 rounded" style={{ color: '#81888f' }}>index.css</span></span>
           </div>
           
           {/* Response Actions */}
@@ -112,54 +116,72 @@ const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* Footer Input Area */}
-      <div className="p-4 pt-0 mt-auto">
-        {/* Suggestion Pills with Fade Effect */}
-        <div className="relative mb-3">
-          <div className="flex gap-2 overflow-x-auto no-scrollbar px-1 scroll-smooth">
-             {['Add preset patterns', 'Add audio effects', 'Add MIDI support', 'Customize synth', 'Add more'].map((text, i) => (
-               <button key={i} className="whitespace-nowrap px-4 py-2 rounded-xl bg-[#27272a] text-sm text-gray-200 hover:bg-[#3f3f46] transition-colors font-medium border border-transparent">
-                  {text}
-               </button>
-             ))}
+      {/* Footer Container */}
+      <div className="absolute bottom-0 left-0 w-full z-30 pointer-events-none">
+        
+        {/* The Fade-out Mask Overlay */}
+        <div className="h-4 w-full bg-gradient-to-t from-sidebar via-sidebar/90 to-transparent" />
+        
+        {/* Suggestion Pills & Input Area - Expanded width with px-[14px] */}
+        <div className="bg-sidebar pointer-events-auto">
+          {/* Suggestion Pills - Reduced padding to expand width */}
+          <div className="relative px-[14px]">
+            <div className="flex gap-2 overflow-x-auto no-scrollbar px-1 scroll-smooth">
+               {['Add preset patterns', 'Add audio effects', 'Add MIDI support', 'Customize synth', 'Add more'].map((text, i) => (
+                 <button key={i} className="whitespace-nowrap px-4 py-2 rounded-xl bg-[#27272a] text-sm text-gray-200 hover:bg-[#3f3f46] transition-colors font-medium border border-transparent">
+                    {text}
+                 </button>
+               ))}
+            </div>
+            {/* Fade Overlays for Horizontal Scroll - Adjusted widths to match 14px padding */}
+            <div className="absolute top-0 right-0 w-12 h-full bg-gradient-to-l from-sidebar to-transparent pointer-events-none" />
+            <div className="absolute top-0 left-0 w-[14px] h-full bg-gradient-to-r from-sidebar to-transparent pointer-events-none" />
           </div>
-          {/* Fade Right Overlay */}
-          <div className="absolute top-0 right-0 w-16 h-full bg-gradient-to-l from-sidebar to-transparent pointer-events-none" />
-          {/* Fade Left Overlay (optional, subtle) */}
-          <div className="absolute top-0 left-0 w-4 h-full bg-gradient-to-r from-sidebar to-transparent pointer-events-none" />
-        </div>
 
-        {/* Prompt Input Box */}
-        <div className="bg-[#27272a] rounded-[26px] p-3 relative flex flex-col gap-2 shadow-lg">
-           <textarea 
-              placeholder="Ask Lovable..." 
-              className="w-full bg-transparent text-gray-100 placeholder-gray-400 resize-none outline-none min-h-[48px] px-3 py-2 text-[16px] font-normal"
-              rows={1}
-           />
-           <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                 <button className="p-2.5 rounded-full bg-[#3f3f46]/60 text-gray-300 hover:bg-[#3f3f46] hover:text-white transition-colors">
-                    <Plus size={18} />
-                 </button>
-                 <button className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#3f3f46]/60 text-gray-300 hover:bg-[#3f3f46] hover:text-white transition-colors text-xs font-medium">
-                    <AnnotateIcon size={16} />
-                    Annotate app
-                 </button>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                 <button className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#3f3f46]/60 text-gray-300 hover:bg-[#3f3f46] hover:text-white transition-colors text-xs font-medium">
-                    <MessageSquare size={16} />
-                    Chat
-                 </button>
-                 <button className="p-2.5 rounded-full bg-[#3f3f46]/60 text-gray-300 hover:bg-[#3f3f46] hover:text-white transition-colors">
-                    <AudioLines size={18} />
-                 </button>
-                 <button className="p-2.5 rounded-full bg-[#d4d4d8] text-black hover:bg-white transition-colors flex items-center justify-center shadow-md">
-                    <ArrowUp size={18} strokeWidth={2.5} />
-                 </button>
-              </div>
-           </div>
+          {/* Prompt Input Area - Dimensions maintained exactly from previous version */}
+          <div className="px-[14px] pb-4 pt-4">
+            <div className="bg-[#27272a] rounded-[26px] p-3.5 relative flex flex-col gap-2 shadow-lg border border-white/5">
+               <textarea 
+                  placeholder="Ask Lovable..." 
+                  className="w-full bg-transparent text-gray-100 placeholder-gray-400 resize-none outline-none min-h-[44px] px-3 py-1.5 text-[16px] leading-relaxed font-normal"
+                  rows={1}
+               />
+               <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                     <button className="p-2.5 rounded-full bg-[#3f3f46]/60 text-gray-300 hover:bg-[#3f3f46] hover:text-white transition-colors flex-shrink-0">
+                        <Plus size={18} />
+                     </button>
+                     <button 
+                        className={`flex items-center gap-2 rounded-full bg-[#3f3f46]/60 text-gray-300 hover:bg-[#3f3f46] hover:text-white transition-colors text-[13px] font-medium flex-shrink-0
+                          ${isCompact ? 'p-2.5 justify-center' : 'px-4 py-2.5'}
+                        `}
+                        title="Annotate app"
+                     >
+                        <AnnotateIcon size={16} />
+                        {!isCompact && <span>Annotate app</span>}
+                     </button>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                     <button 
+                        className={`flex items-center gap-2 rounded-full bg-[#3f3f46]/60 text-gray-300 hover:bg-[#3f3f46] hover:text-white transition-colors text-[13px] font-medium flex-shrink-0
+                          ${isCompact ? 'p-2.5 justify-center' : 'px-4 py-2.5'}
+                        `}
+                        title="Chat"
+                     >
+                        <MessageSquare size={16} />
+                        {!isCompact && <span>Chat</span>}
+                     </button>
+                     <button className="p-2.5 rounded-full bg-[#3f3f46]/60 text-gray-300 hover:bg-[#3f3f46] hover:text-white transition-colors flex-shrink-0">
+                        <AudioLines size={18} />
+                     </button>
+                     <button className="p-2.5 rounded-full bg-[#d4d4d8] text-black hover:bg-white transition-colors flex items-center justify-center shadow-md flex-shrink-0">
+                        <ArrowUp size={18} strokeWidth={2.5} />
+                     </button>
+                  </div>
+               </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
